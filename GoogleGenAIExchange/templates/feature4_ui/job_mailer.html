@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search & Application System</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .job-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-card.selected {
+            border: 2px solid var(--primary-color);
+        }
+        
+        .job-card.multi-selected {
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .job-company {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .job-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .job-location {
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+        }
+        
+        .job-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .cover-letter-preview {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            white-space: pre-wrap;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin: 0 0.5rem;
+        }
+        
+        .step.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .multi-select-controls {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .job-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-indicator {
+                flex-direction: column;
+            }
+            
+            .step {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Job Search & Application System</h1>
+            <p class="subtitle">Find jobs, generate cover letters, and apply automatically</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="step-indicator">
+            <div class="step active" id="step1">1. Enter Your Details</div>
+            <div class="step" id="step2">2. Search Jobs</div>
+            <div class="step" id="step3">3. Generate Cover Letters</div>
+            <div class="step" id="step4">4. Apply</div>
+        </div>
+
+        <!-- Step 1: User Details -->
+        <div class="card" id="step1-card">
+            <h2 class="card-title">Your Information</h2>
+            <div class="form-group">
+                <label for="skills">Your Skills (comma separated)</label>
+                <input type="text" id="skills" placeholder="e.g., Python, JavaScript, React, AWS">
+            </div>
+            <div class="form-group">
+                <label for="resume">Your Resume Content</label>
+                <textarea id="resume" placeholder="Paste your resume content here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="location">Preferred Location (optional)</label>
+                <input type="text" id="location" placeholder="e.g., New York, Remote">
+            </div>
+            <div class="form-group">
+                <label for="job-type">Job Type (optional)</label>
+                <select id="job-type">
+                    <option value="">Any</option>
+                    <option value="full-time">Full Time</option>
+                    <option value="part-time">Part Time</option>
+                    <option value="contract">Contract</option>
+                    <option value="remote">Remote</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="multi-select">
+                    <input type="checkbox" id="multi-select"> Enable multiple job selection
+                </label>
+            </div>
+            <button class="btn" onclick="searchJobs()">Search Jobs</button>
+        </div>
+
+        <!-- Step 2: Job Search Results -->
+        <div class="card hidden" id="step2-card">
+            <h2 class="card-title">Job Opportunities</h2>
+            <div id="multi-select-controls" class="multi-select-controls hidden">
+                <p>Select multiple jobs to apply to. You can generate customized cover letters for each.</p>
+                <button class="btn" onclick="selectAllJobs()">Select All</button>
+                <button class="btn" onclick="deselectAllJobs()">Deselect All</button>
+            </div>
+            <div id="job-results">
+                <p>Searching for jobs...</p>
+            </div>
+            <div id="selected-jobs-count" class="hidden">
+                <p><strong><span id="selected-count">0</span> jobs selected</strong></p>
+            </div>
+            <button class="btn hidden" id="continue-btn" onclick="continueToCoverLetters()">Continue to Cover Letters</button>
+        </div>
+
+        <!-- Step 3: Cover Letter Generation -->
+        <div class="card hidden" id="step3-card">
+            <h2 class="card-title">Generate Cover Letters</h2>
+            <div class="form-group">
+                <label for="tone">Cover Letter Tone</label>
+                <select id="tone">
+                    <option value="professional">Professional</option>
+                    <option value="enthusiastic">Enthusiastic</option>
+                    <option value="concise">Concise</option>
+                </select>
+            </div>
+            <button class="btn" onclick="generateCoverLetters()">Generate Cover Letters</button>
+            
+            <div id="cover-letters-container">
+                <!-- Cover letters will be generated here -->
+            </div>
+        </div>
+
+        <!-- Step 4: Application Complete -->
+        <div class="card hidden" id="step4-card">
+            <h2 class="card-title">Application Complete!</h2>
+            <div id="application-result"></div>
+            <button class="btn" onclick="resetApp()">Start Over</button>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alert-container"></div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let jobs = [];
+        let selectedJobs = [];
+        let coverLetters = {};
+        let multiSelectMode = false;
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function updateStepIndicator() {
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (i === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            }
+        }
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('hidden');
+            });
+            document.getElementById(`step${stepNumber}-card`).classList.remove('hidden');
+            currentStep = stepNumber;
+            updateStepIndicator();
+        }
+
+        async function searchJobs() {
+            const skills = document.getElementById('skills').value;
+            const location = document.getElementById('location').value;
+            const jobType = document.getElementById('job-type').value;
+            const resume = document.getElementById('resume').value;
+            multiSelectMode = document.getElementById('multi-select').checked;
+            
+            if (!skills || !resume) {
+                showAlert('Please enter your skills and resume content', 'error');
+                return;
+            }
+            
+            showAlert('Searching for jobs...', 'success');
+            
+            try {
+                const response = await fetch('job_sk/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        skills: skills.split(',').map(s => s.trim()),
+                        location: location,
+                        job_type: jobType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    jobs = data.jobs;
+                    selectedJobs = [];
+                    displayJobs();
+                    showStep(2);
+                } else {
+                    showAlert(data.error || 'Failed to search for jobs', 'error');
+                }
+            } catch (error) {
+                showAlert('Error searching for jobs: ' + error.message, 'error');
+            }
+        }
+
+        function displayJobs() {
+            const jobResults = document.getElementById('job-results');
+            const multiSelectControls = document.getElementById('multi-select-controls');
+            const selectedCount = document.getElementById('selected-count');
+            const continueBtn = document.getElementById('continue-btn');
+            const selectedJobsCount = document.getElementById('selected-jobs-count');
+            
+            if (multiSelectMode) {
+                multiSelectControls.classList.remove('hidden');
+            } else {
+                multiSelectControls.classList.add('hidden');
+            }
+            
+            if (jobs.length === 0) {
+                jobResults.innerHTML = '<p>No jobs found matching your criteria. Try different skills or filters.</p>';
+                return;
+            }
+            
+            jobResults.innerHTML = `
+                <p>Found ${jobs.length} job opportunities. ${multiSelectMode ? 'Select one or more to apply:' : 'Select one to apply:'}</p>
+                <div class="job-list">
+                    ${jobs.map(job => `
+                        <div class="job-card ${isJobSelected(job.id) ? (multiSelectMode ? 'multi-selected' : 'selected') : ''}" onclick="toggleJobSelection('${job.id}')">
+                            ${multiSelectMode ? `<input type="checkbox" class="job-checkbox" ${isJobSelected(job.id) ? 'checked' : ''} onchange="toggleJobSelection('${job.id}')">` : ''}
+                            <div class="job-company">${job.company}</div>
+                            <div class="job-title">${job.title}</div>
+                            <div class="job-location">${job.location}</div>
+                            <div class="job-salary">${job.salary}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            selectedCount.textContent = selectedJobs.length;
+            
+            if (selectedJobs.length > 0) {
+                selectedJobsCount.classList.remove('hidden');
+                continueBtn.classList.remove('hidden');
+            } else {
+                selectedJobsCount.classList.add('hidden');
+                continueBtn.classList.add('hidden');
+            }
+        }
+
+        function isJobSelected(jobId) {
+            return selectedJobs.some(job => job.id === jobId);
+        }
+
+        function toggleJobSelection(jobId) {
+            if (multiSelectMode) {
+                const job = jobs.find(j => j.id === jobId);
+                if (isJobSelected(jobId)) {
+                    selectedJobs = selectedJobs.filter(j => j.id !== jobId);
+                } else {
+                    selectedJobs.push(job);
+                }
+            } else {
+                // Single selection mode
+                selectedJobs = [jobs.find(j => j.id === jobId)];
+            }
+            displayJobs();
+        }
+
+        function selectAllJobs() {
+            selectedJobs = [...jobs];
+            displayJobs();
+        }
+
+        function deselectAllJobs() {
+            selectedJobs = [];
+            displayJobs();
+        }
+
+        function continueToCoverLetters() {
+            if (selectedJobs.length === 0) {
+                showAlert('Please select at least one job', 'error');
+                return;
+            }
+            showStep(3);
+        }
+
+        async function generateCoverLetters() {
+            if (selectedJobs.length === 0) {
+                showAlert('Please select at least one job', 'error');
+                return;
+            }
+            
+            const resume = document.getElementById('resume').value;
+            const tone = document.getElementById('tone').value;
+            
+            showAlert('Generating cover letters...', 'success');
+            
+            const container = document.getElementById('cover-letters-container');
+            container.innerHTML = '<p>Generating cover letters...</p>';
+            
+            try {
+                coverLetters = {};
+                
+                for (const job of selectedJobs) {
+                    const response = await fetch('job_sk/generate-cover-letter', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            job: job,
+                            resume: resume,
+                            tone: tone
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        coverLetters[job.id] = data.cover_letter;
+                    } else {
+                        showAlert(`Failed to generate cover letter for ${job.company}: ${data.error}`, 'error');
+                        coverLetters[job.id] = "Error generating cover letter";
+                    }
+                }
+                
+                displayCoverLetters();
+                
+            } catch (error) {
+                showAlert('Error generating cover letters: ' + error.message, 'error');
+            }
+        }
+
+        function displayCoverLetters() {
+            const container = document.getElementById('cover-letters-container');
+            container.innerHTML = '';
+            
+            selectedJobs.forEach(job => {
+                const coverLetter = coverLetters[job.id] || "Cover letter not generated yet";
+                
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'cover-letter-preview';
+                letterDiv.innerHTML = `
+                    <h3>Cover Letter for ${job.title} at ${job.company}</h3>
+                    <div>${coverLetter.replace(/\n/g, '<br>')}</div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="applicant-name-${job.id}">Your Name</label>
+                        <input type="text" id="applicant-name-${job.id}" placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="applicant-email-${job.id}">Company's Email</label>
+                        <input type="email" id="applicant-email-${job.id}" placeholder="your.email@example.com">
+                    </div>
+                    <button class="btn btn-success" onclick="sendApplication('${job.id}')">Send Application</button>
+                    <button class="btn" onclick="saveMaterials('${job.id}')">Save Materials</button>
+                `;
+                
+                container.appendChild(letterDiv);
+            });
+            
+            // Add a button to send all applications
+            if (selectedJobs.length > 1) {
+                const sendAllBtn = document.createElement('button');
+                sendAllBtn.className = 'btn btn-success';
+                sendAllBtn.textContent = 'Send All Applications';
+                sendAllBtn.onclick = sendAllApplications;
+                sendAllBtn.style.marginTop = '1rem';
+                container.appendChild(sendAllBtn);
+            }
+        }
+
+        async function sendApplication(jobId) {
+            const job = selectedJobs.find(j => j.id === jobId);
+            const email = document.getElementById(`applicant-email-${jobId}`).value;
+            const name = document.getElementById(`applicant-name-${jobId}`).value;
+            const coverLetter = coverLetters[jobId];
+            
+            if (!email || !name) {
+                showAlert('Please enter your name and email', 'error');
+                return;
+            }
+            
+            if (!coverLetter || coverLetter.includes('Error generating')) {
+                showAlert('Please generate a cover letter first', 'error');
+                return;
+            }
+            
+            showAlert(`Sending application to ${job.company}...`, 'success');
+            
+            try {
+                const response = await fetch('job_sk/send-application', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        job: job,
+                        cover_letter: coverLetter,
+                        email: email,
+                        name: name
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert(`Application sent to ${job.company} successfully!`, 'success');
+                } else {
+                    showAlert(`Failed to send application to ${job.company}: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`Error sending application to ${job.company}: ` + error.message, 'error');
+            }
+        }
+
+        async function sendAllApplications() {
+            showAlert('Sending all applications...', 'success');
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const job of selectedJobs) {
+                const email = document.getElementById(`applicant-email-${job.id}`)?.value;
+                const name = document.getElementById(`applicant-name-${job.id}`)?.value;
+                const coverLetter = coverLetters[job.id];
+                
+                if (!email || !name || !coverLetter || coverLetter.includes('Error generating')) {
+                    errorCount++;
+                    continue;
+                }
+                
+                try {
+                    const response = await fetch('job_sk/send-application', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            job: job,
+                            cover_letter: coverLetter,
+                            email: email,
+                            name: name
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                    }
+                } catch (error) {
+                    errorCount++;
+                }
+            }
+            
+            showAlert(`Sent ${successCount} applications successfully. ${errorCount} failed.`, 'success');
+        }
+
+        async function saveMaterials(jobId) {
+            const job = selectedJobs.find(j => j.id === jobId);
+            const coverLetter = coverLetters[jobId];
+            
+            showAlert(`Saving application materials for ${job.company}...`, 'success');
+            
+            try {
+                const response = await fetch('job_sk/save-materials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        job: job,
+                        cover_letter: coverLetter
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                } else {
+                    showAlert(data.error || 'Failed to save materials', 'error');
+                }
+            } catch (error) {
+                showAlert('Error saving materials: ' + error.message, 'error');
+            }
+        }
+
+        function resetApp() {
+            currentStep = 1;
+            jobs = [];
+            selectedJobs = [];
+            coverLetters = {};
+            multiSelectMode = false;
+            
+            document.getElementById('skills').value = '';
+            document.getElementById('resume').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('job-type').value = '';
+            document.getElementById('tone').value = 'professional';
+            document.getElementById('multi-select').checked = false;
+            document.getElementById('cover-letters-container').innerHTML = '';
+            
+            showStep(1);
+        }
+
+        // Initialize the app
+        updateStepIndicator();
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+pymupdf
+langchain
+langgraph
+python-docx
+PyPDF2
+reportlab

@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Resume Builder — Data Pirates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Add jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #3a86ff;
+      --primary-dark: #2563eb;
+      --secondary: #7b68ee;
+      --dark: #0f172a;
+      --darker: #0a1128;
+      --light-dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    [data-theme="light"] {
+      --primary: #3a86ff;
+      --primary-dark: #2563eb;
+      --secondary: #7b68ee;
+      --dark: #f8fafc;
+      --darker: #e2e8f0;
+      --light-dark: #ffffff;
+      --light: #0f172a;
+      --gray: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+      transition: all 0.5s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 25px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #6b5bc9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-purple {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 6px;
+      border-radius: 20px;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--light);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .chip:hover {
+      transform: scale(1.05);
+      background: rgba(59, 130, 246, 0.3);
+    }
+
+    .chip.missing {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .chip.missing:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    input[type="text"], input[type="file"], textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--darker);
+      color: var(--light);
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.3);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--light-dark);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--primary);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+      filter: blur(40px);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--secondary);
+      top: 70%;
+      left: 80%;
+      animation-delay: -5s;
+    }
+
+    .shape-3 {
+      width: 250px;
+      height: 250px;
+      background: var(--success);
+      top: 30%;
+      left: 70%;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, 40px) rotate(5deg);
+      }
+      50% {
+        transform: translate(0, 80px) rotate(0deg);
+      }
+      75% {
+        transform: translate(-20px, 40px) rotate(-5deg);
+      }
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--darker);
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: width 1s ease-in-out;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .resume-preview {
+      font-family: 'Georgia', serif;
+      font-size: 12pt;
+      line-height: 1.4;
+      color: #333;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .experience-item {
+      margin-bottom: 15px;
+    }
+
+    .bullet-point {
+      margin-left: 20px;
+      list-style-type: disc;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--light-dark);
+      border-radius: 16px;
+      padding: 25px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .floating-shapes {
+        display: none;
+      }
+      
+      .modal-content {
+        padding: 15px;
+      }
+      
+      .resume-preview {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating background shapes -->
+  <div class="floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+
+  <div class="container">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl font-bold mb-2">AI-Powered Resume Builder</h1>
+      <p class="text-xl opacity-80">Craft the perfect resume for your dream job</p>
+    </header>
+
+    <div class="card fade-in" style="transition-delay: 0.1s">
+      <div class="flex items-center mb-4">
+        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold mr-3">1</div>
+        <h2 class="text-2xl font-semibold">Enter Your Information</h2>
+      </div>
+      
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button id="openPromptBtn" class="btn btn-primary">
+          <i class="fas fa-magic mr-2"></i> AI Prompt Generator
+        </button>
+        <button id="createBtn" class="btn btn-success">
+          <i class="fas fa-plus-circle mr-2"></i> Create Resume
+        </button>
+        <button id="previewBtn" class="btn btn-secondary">
+          <i class="fas fa-eye mr-2"></i> Preview PDF
+        </button>
+        <button id="downloadPdfBtn" class="btn btn-purple hidden">
+          <i class="fas fa-download mr-2"></i> Download PDF
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <label for="targetSkills" class="block mb-2 font-medium">Target Skills (comma separated)</label>
+        <input id="targetSkills" placeholder="e.g. Python, JavaScript, React" class="border p-2 rounded"/>
+      </div>
+
+      <div class="mb-4">
+        <label for="rawPrompt" class="block mb-2 font-medium">Your Professional Information</label>
+        <textarea id="rawPrompt" rows="10" class="w-full border rounded p-3" placeholder="Example: I am John Doe, a software engineer with 5 years of experience. I specialize in Python, JavaScript, and cloud technologies. I worked at Tech Corp as a Senior Developer from 2020 to present, where I led a team of 5 developers. I have a B.S. in Computer Science from University of California. My projects include building an e-commerce platform that served 10,000+ users. I'm certified in AWS Solutions Architecture. I'm looking for a senior role in backend development."></textarea>
+      </div>
+      
+      <p id="status" class="text-sm opacity-80 mt-2"></p>
+    </div>
+
+    <!-- Results & visualizations -->
+    <div id="resultsPanel" class="fade-in hidden">
+      <div class="flex items-center mb-6">
+        <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold mr-3">2</div>
+        <h2 class="text-2xl font-semibold">Analysis Results</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-6">
+        <div class="card">
+          <h3 class="text-xl font-semibold mb-4">ATS Score</h3>
+          <div class="h-48">
+            <canvas id="atsChart"></canvas>
+          </div>
+          <div class="progress-bar mt-4">
+            <div id="matchProgress" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <p class="text-center mt-2" id="atsText">Your ATS score is <span id="matchPercent">0</span>%</p>
+        </div>
+
+        <div class="card">
+          <h3 class="text-xl font-semibold mb-4">Experience Timeline</h3>
+          <div class="h-48">
+            <canvas id="timelineChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-xl font-semibold mb-4">Top Keywords</h3>
+          <div class="h-48">
+            <canvas id="keywordsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="card">
+          <h3 class="text-xl font-semibold mb-4">Matched Skills</h3>
+          <div id="skillChips" class="mt-2"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-xl font-semibold mb-4">Skills to Improve</h3>
+          <div id="gapList" class="mt-2"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="text-xl font-semibold mb-4">Generated Resume</h3>
+        <pre id="resumeText" class="whitespace-pre-wrap max-h-96 overflow-auto p-4 bg-gray-800 rounded-lg"></pre>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button id="downloadJson" class="btn btn-primary">
+            <i class="fas fa-file-code mr-2"></i> Download JSON
+          </button>
+          <button id="downloadTxt" class="btn btn-primary">
+            <i class="fas fa-file-alt mr-2"></i> Download TXT
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-2xl font-semibold mb-4">Resume Preview</h3>
+      <div id="pdfPreview" class="resume-preview mb-4"></div>
+      <div class="flex justify-end gap-2">
+        <button id="closePreview" class="btn btn-secondary">Close</button>
+        <button id="confirmDownloadPdf" class="btn btn-purple">
+          <i class="fas fa-download mr-2"></i> Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt modal -->
+  <div id="promptModal" class="modal">
+    <div class="modal-content">
+      <h3 class="text-2xl font-semibold mb-4">AI Prompt Generator</h3>
+      <div class="space-y-4">
+        <div>
+          <label for="pg_name" class="block mb-2 font-medium">Full name</label>
+          <input id="pg_name" placeholder="e.g. John Doe" class="w-full border p-2 rounded"/>
+        </div>
+        <div>
+          <label for="pg_title" class="block mb-2 font-medium">Current title</label>
+          <input id="pg_title" placeholder="e.g. Senior ML Engineer" class="w-full border p-2 rounded"/>
+        </div>
+        <div>
+          <label for="pg_contact" class="block mb-2 font-medium">Contact Information</label>
+          <input id="pg_contact" placeholder="Email / Phone" class="w-full border p-2 rounded"/>
+        </div>
+        <div>
+          <label for="pg_experience" class="block mb-2 font-medium">Experience</label>
+          <textarea id="pg_experience" placeholder="Company, Role, Duration, Achievements" class="w-full border p-2 rounded" rows="3"></textarea>
+        </div>
+        <div>
+          <label for="pg_education" class="block mb-2 font-medium">Education</label>
+          <textarea id="pg_education" placeholder="Degree, Institution, Year, GPA" class="w-full border p-2 rounded" rows="2"></textarea>
+        </div>
+        <div>
+          <label for="pg_skills" class="block mb-2 font-medium">Skills</label>
+          <input id="pg_skills" placeholder="Comma separated skills" class="w-full border p-2 rounded"/>
+        </div>
+        <div>
+          <label for="pg_projects" class="block mb-2 font-medium">Projects</label>
+          <textarea id="pg_projects" placeholder="Name, Description, Technologies" class="w-full border p-2 rounded" rows="2"></textarea>
+        </div>
+        <div>
+          <label for="pg_certifications" class="block mb-2 font-medium">Certifications (optional)</label>
+          <input id="pg_certifications" placeholder="Certifications" class="w-full border p-2 rounded"/>
+        </div>
+        <div>
+          <label for="pg_target" class="block mb-2 font-medium">Target Role/Industry (optional)</label>
+          <input id="pg_target" placeholder="Target role/industry" class="w-full border p-2 rounded"/>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button id="cancelPrompt" class="btn btn-secondary">Cancel</button>
+        <button id="insertPrompt" class="btn btn-primary">
+          <i class="fas fa-magic mr-2"></i> Generate Prompt
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Initialize jsPDF
+  const { jsPDF } = window.jspdf;
+
+  // UI wiring
+  const openPromptBtn = document.getElementById("openPromptBtn");
+  const promptModal = document.getElementById("promptModal");
+  const cancelPrompt = document.getElementById("cancelPrompt");
+  const insertPrompt = document.getElementById("insertPrompt");
+  const createBtn = document.getElementById("createBtn");
+  const previewBtn = document.getElementById("previewBtn");
+  const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+  const closePreview = document.getElementById("closePreview");
+  const confirmDownloadPdf = document.getElementById("confirmDownloadPdf");
+  const previewModal = document.getElementById("previewModal");
+  const status = document.getElementById("status");
+  const targetSkillsInput = document.getElementById("targetSkills");
+
+  let currentResumeId = null;
+  let currentResumeJson = null;
+
+  // Charts placeholders
+  let atsChart = null, timelineChart = null, keywordsChart = null;
+
+  // Theme management
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  }
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  }
+
+  function updateThemeIcon(theme) {
+    const icon = document.getElementById('theme-icon');
+    icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+  }
+
+  // Modal handling
+  function openModal(modal) {
+    modal.classList.add('active');
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove('active');
+  }
+
+  // Animation on scroll
+  function animateElements() {
+    const elements = document.querySelectorAll('.fade-in');
+    elements.forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight - 100) {
+        el.classList.add('visible');
+      }
+    });
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+    animateElements();
+    window.addEventListener('scroll', animateElements);
+
+    // Set up modal event listeners
+    openPromptBtn.addEventListener("click", () => openModal(promptModal));
+    cancelPrompt.addEventListener("click", () => closeModal(promptModal));
+    closePreview.addEventListener("click", () => closeModal(previewModal));
+    
+    // Close modals when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal(modal);
+      });
+    });
+  });
+
+  insertPrompt.addEventListener("click", () => {
+    const name = document.getElementById("pg_name").value.trim();
+    const title = document.getElementById("pg_title").value.trim();
+    const contact = document.getElementById("pg_contact").value.trim();
+    const experience = document.getElementById("pg_experience").value.trim();
+    const education = document.getElementById("pg_education").value.trim();
+    const skills = document.getElementById("pg_skills").value.trim();
+    const projects = document.getElementById("pg_projects").value.trim();
+    const certifications = document.getElementById("pg_certifications").value.trim();
+    const target = document.getElementById("pg_target").value.trim();
+
+    // Build AI-friendly prompt
+    let prompt = `Create a professional resume for ${name || "[NAME]"}. `;
+    if (title) prompt += `Current title: ${title}. `;
+    if (contact) prompt += `Contact: ${contact}. `;
+    if (experience) prompt += `Work experience: ${experience}. `;
+    if (education) prompt += `Education: ${education}. `;
+    if (skills) prompt += `Skills: ${skills}. `;
+    if (projects) prompt += `Projects: ${projects}. `;
+    if (certifications) prompt += `Certifications: ${certifications}. `;
+    if (target) prompt += `Target role/industry: ${target}. `;
+    
+    prompt += "Generate a comprehensive resume with all relevant sections.";
+
+    // Insert into textarea
+    const ta = document.getElementById("rawPrompt");
+    ta.value = prompt;
+    closeModal(promptModal);
+  });
+
+  // Create resume action
+  createBtn.addEventListener("click", async () => {
+    const raw = document.getElementById("rawPrompt").value.trim();
+    const targetSkills = document.getElementById("targetSkills").value.trim();
+    if (!raw) { alert("Please enter resume info or use AI Prompt Generator"); return; }
+    status.textContent = "Generating resume — contacting AI...";
+    createBtn.disabled = true;
+
+    try {
+      // In a real implementation, this would call your backend
+      // For this demo, we'll simulate the response
+      const sampleResume = {
+        name: "John Doe",
+        title: "Senior Software Engineer",
+        contact: {
+          email: "john.doe@example.com",
+          phone: "(123) 456-7890",
+          location: "San Francisco, CA",
+          linkedin: "linkedin.com/in/johndoe"
+        },
+        summary: "Experienced software engineer with 5+ years in full-stack development, specializing in JavaScript and Python. Proven track record of delivering scalable solutions and leading cross-functional teams.",
+        experiences: [
+          {
+            role: "Senior Developer",
+            company: "Tech Corp",
+            location: "San Francisco, CA",
+            start: "2020-01",
+            end: "Present",
+            description: [
+              "Led a team of 5 developers in building a scalable microservices architecture",
+              "Improved system performance by 40% through optimization techniques",
+              "Mentored junior developers and conducted code reviews"
+            ]
+          },
+          {
+            role: "Software Engineer",
+            company: "StartUp Inc",
+            location: "San Jose, CA",
+            start: "2018-06",
+            end: "2020-01",
+            description: [
+              "Developed customer-facing features using React and Node.js",
+              "Implemented CI/CD pipeline reducing deployment time by 60%",
+              "Collaborated with product team to define requirements"
+            ]
+          }
+        ],
+        education: [
+          {
+            degree: "B.S. Computer Science",
+            institution: "University of California",
+            location: "Berkeley, CA",
+            year: "2018",
+            gpa: "3.8"
+          }
+        ],
+        skills: [
+          {
+            category: "Programming Languages",
+            items: ["Python", "JavaScript", "Java", "C++"]
+          },
+          {
+            category: "Frameworks",
+            items: ["React", "Node.js", "Django", "Spring Boot"]
+          },
+          {
+            category: "Tools & Technologies",
+            items: ["Docker", "AWS", "Kubernetes", "Git"]
+          }
+        ],
+        projects: [
+          {
+            name: "E-commerce Platform",
+            description: "Built a full-stack e-commerce solution serving 10,000+ users",
+            technologies: ["React", "Node.js", "MongoDB"],
+            outcomes: "Increased conversion rate by 25%"
+          },
+          {
+            name: "ML Recommendation System",
+            description: "Developed a machine learning system for product recommendations",
+            technologies: ["Python", "TensorFlow", "Scikit-learn"],
+            outcomes: "Improved click-through rate by 18%"
+          }
+        ],
+        certifications: [
+          {
+            name: "AWS Certified Solutions Architect",
+            issuer: "Amazon Web Services",
+            date: "2021"
+          }
+        ],
+        languages: [
+          {
+            language: "English",
+            proficiency: "Native"
+          },
+          {
+            language: "Spanish",
+            proficiency: "Intermediate"
+          }
+        ]
+      };
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      currentResumeId = "sample_" + Date.now();
+      currentResumeJson = sampleResume;
+      
+      // Generate analysis data
+      const analysis = {
+        ats_score: 87,
+        matched_skills: targetSkills ? targetSkills.split(',').slice(0, 3) : ["Python", "JavaScript", "React"],
+        missing_skills: targetSkills ? [] : ["TypeScript", "GraphQL"],
+        keyword_freq: [
+          {word: "development", count: 12},
+          {word: "software", count: 10},
+          {word: "engineer", count: 8},
+          {word: "project", count: 7},
+          {word: "team", count: 6}
+        ],
+        timeline: [
+          {role: "Senior Developer", company: "Tech Corp", years: 4},
+          {role: "Software Engineer", company: "StartUp Inc", years: 2}
+        ],
+        projects_count: 2,
+        resume_text: `JOHN DOE
+Senior Software Engineer
+Email: john.doe@example.com | Phone: (123) 456-7890 | Location: San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Experienced software engineer with 5+ years in full-stack development, specializing in JavaScript and Python. Proven track record of delivering scalable solutions and leading cross-functional teams.
+
+EXPERIENCE
+Senior Developer, Tech Corp, San Francisco, CA (2020-01 - Present)
+- Led a team of 5 developers in building a scalable microservices architecture
+- Improved system performance by 40% through optimization techniques
+- Mentored junior developers and conducted code reviews
+
+Software Engineer, StartUp Inc, San Jose, CA (2018-06 - 2020-01)
+- Developed customer-facing features using React and Node.js
+- Implemented CI/CD pipeline reducing deployment time by 60%
+- Collaborated with product team to define requirements
+
+EDUCATION
+B.S. Computer Science, University of California, Berkeley, CA (2018), GPA: 3.8
+
+SKILLS
+Programming Languages: Python, JavaScript, Java, C++
+Frameworks: React, Node.js, Django, Spring Boot
+Tools & Technologies: Docker, AWS, Kubernetes, Git
+
+PROJECTS
+E-commerce Platform: Built a full-stack e-commerce solution serving 10,000+ users. Technologies: React, Node.js, MongoDB. Outcomes: Increased conversion rate by 25%.
+
+ML Recommendation System: Developed a machine learning system for product recommendations. Technologies: Python, TensorFlow, Scikit-learn. Outcomes: Improved click-through rate by 18%.
+
+CERTIFICATIONS
+AWS Certified Solutions Architect, Amazon Web Services (2021)
+
+LANGUAGES
+English (Native), Spanish (Intermediate)`,
+        resume_json: sampleResume
+      };
+      
+      status.textContent = "Resume generated successfully!";
+      
+      showResults(analysis, currentResumeId);
+      downloadPdfBtn.classList.remove("hidden");
+    } catch (err) {
+      createBtn.disabled = false;
+      status.textContent = "Error: " + err;
+      console.error(err);
+    }
+  });
+
+  // Preview PDF
+  previewBtn.addEventListener("click", () => {
+    if (!currentResumeJson) {
+      alert("Please generate a resume first");
+      return;
+    }
+    
+    renderPdfPreview(currentResumeJson);
+    openModal(previewModal);
+  });
+
+  confirmDownloadPdf.addEventListener("click", () => {
+    if (!currentResumeId || !currentResumeJson) return;
+    
+    // Generate PDF from the preview content
+    const previewElement = document.getElementById('pdfPreview');
+    
+    // Use html2canvas to capture the preview as an image
+    html2canvas(previewElement, {
+      scale: 2, // Higher quality
+      useCORS: true,
+      logging: false
+    }).then(canvas => {
+      // Create PDF
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10;
+      
+      pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save(`resume_${currentResumeId}.pdf`);
+    });
+  });
+
+  // Download JSON
+  document.getElementById("downloadJson").addEventListener("click", () => {
+    if (!currentResumeId || !currentResumeJson) return;
+    
+    const jsonStr = JSON.stringify(currentResumeJson, null, 2);
+    const blob = new Blob([jsonStr], {type: 'application/json'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resume_${currentResumeId}.json`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  });
+
+  // Download TXT
+  document.getElementById("downloadTxt").addEventListener("click", () => {
+    const resumeText = document.getElementById("resumeText").textContent;
+    const blob = new Blob([resumeText], {type: 'text/plain'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resume_${currentResumeId || 'download'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  });
+
+  function renderPdfPreview(resumeData) {
+    const preview = document.getElementById("pdfPreview");
+    preview.innerHTML = "";
+    
+    // Name and Title
+    if (resumeData.name) {
+      const nameEl = document.createElement("h1");
+      nameEl.textContent = resumeData.name;
+      nameEl.style.fontSize = "18pt";
+      nameEl.style.fontWeight = "bold";
+      nameEl.style.textAlign = "center";
+      nameEl.style.marginBottom = "8pt";
+      preview.appendChild(nameEl);
+    }
+    
+    if (resumeData.title) {
+      const titleEl = document.createElement("h2");
+      titleEl.textContent = resumeData.title;
+      titleEl.style.fontSize = "14pt";
+      titleEl.style.textAlign = "center";
+      titleEl.style.marginBottom = "12pt";
+      preview.appendChild(titleEl);
+    }
+    
+    // Contact information
+    if (resumeData.contact) {
+      const contactEl = document.createElement("div");
+      contactEl.style.textAlign = "center";
+      contactEl.style.marginBottom = "12pt";
+      contactEl.style.borderBottom = "1pt solid #ccc";
+      contactEl.style.paddingBottom = "6pt";
+      
+      let contactText = "";
+      if (typeof resumeData.contact === "object") {
+        Object.entries(resumeData.contact).forEach(([key, value]) => {
+          if (value) contactText += `${value} | `;
+        });
+        contactText = contactText.slice(0, -3); // Remove last " | "
+      } else {
+        contactText = resumeData.contact;
+      }
+      
+      contactEl.textContent = contactText;
+      preview.appendChild(contactEl);
+    }
+    
+    // Summary
+    if (resumeData.summary) {
+      const summaryHeading = document.createElement("h3");
+      summaryHeading.textContent = "PROFESSIONAL SUMMARY";
+      summaryHeading.style.fontSize = "12pt";
+      summaryHeading.style.fontWeight = "bold";
+      summaryHeading.style.marginBottom = "6pt";
+      preview.appendChild(summaryHeading);
+      
+      const summaryEl = document.createElement("p");
+      summaryEl.textContent = resumeData.summary;
+      summaryEl.style.marginBottom = "12pt";
+      preview.appendChild(summaryEl);
+    }
+    
+    // Experience
+    if (resumeData.experiences && resumeData.experiences.length > 0) {
+      const expHeading = document.createElement("h3");
+      expHeading.textContent = "EXPERIENCE";
+      expHeading.style.fontSize = "12pt";
+      expHeading.style.fontWeight = "bold";
+      expHeading.style.marginBottom = "6pt";
+      preview.appendChild(expHeading);
+      
+      resumeData.experiences.forEach(exp => {
+        const expItem = document.createElement("div");
+        expItem.style.marginBottom = "8pt";
+        
+        let expText = "";
+        if (exp.role) expText += exp.role;
+        if (exp.company) expText += `, ${exp.company}`;
+        if (exp.location) expText += ` - ${exp.location}`;
+        
+        const roleEl = document.createElement("div");
+        roleEl.innerHTML = `<strong>${expText}</strong>`;
+        expItem.appendChild(roleEl);
+        
+        if (exp.start || exp.end) {
+          const datesEl = document.createElement("div");
+          datesEl.textContent = `${exp.start || ""} - ${exp.end || ""}`;
+          datesEl.style.fontSize = "10pt";
+          datesEl.style.marginBottom = "4pt";
+          expItem.appendChild(datesEl);
+        }
+        
+        if (exp.description) {
+          if (Array.isArray(exp.description)) {
+            exp.description.forEach(desc => {
+              const descEl = document.createElement("div");
+              descEl.textContent = `• ${desc}`;
+              descEl.style.marginLeft = "12pt";
+              expItem.appendChild(descEl);
+            });
+          } else {
+            const descEl = document.createElement("div");
+            descEl.textContent = `• ${exp.description}`;
+            descEl.style.marginLeft = "12pt";
+            expItem.appendChild(descEl);
+          }
+        }
+        
+        preview.appendChild(expItem);
+      });
+      
+      preview.appendChild(document.createElement("br"));
+    }
+    
+    // Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      const eduHeading = document.createElement("h3");
+      eduHeading.textContent = "EDUCATION";
+      eduHeading.style.fontSize = "12pt";
+      eduHeading.style.fontWeight = "bold";
+      eduHeading.style.marginBottom = "6pt";
+      preview.appendChild(eduHeading);
+      
+      resumeData.education.forEach(edu => {
+        const eduItem = document.createElement("div");
+        eduItem.style.marginBottom = "8pt";
+        
+        let eduText = "";
+        if (edu.degree) eduText += edu.degree;
+        if (edu.institution) eduText += `, ${edu.institution}`;
+        if (edu.location) eduText += ` - ${edu.location}`;
+        if (edu.year) eduText += ` (${edu.year})`;
+        if (edu.gpa) eduText += `, GPA: ${edu.gpa}`;
+        
+        eduItem.innerHTML = `<strong>${eduText}</strong>`;
+        preview.appendChild(eduItem);
+      });
+      
+      preview.appendChild(document.createElement("br"));
+    }
+    
+    // Skills
+    if (resumeData.skills) {
+      const skillsHeading = document.createElement("h3");
+      skillsHeading.textContent = "SKILLS";
+      skillsHeading.style.fontSize = "12pt";
+      skillsHeading.style.fontWeight = "bold";
+      skillsHeading.style.marginBottom = "6pt";
+      preview.appendChild(skillsHeading);
+      
+      const skillsEl = document.createElement("div");
+      
+      if (Array.isArray(resumeData.skills)) {
+        resumeData.skills.forEach(skill => {
+          if (typeof skill === "object" && skill.category && skill.items) {
+            skillsEl.innerHTML += `<strong>${skill.category}:</strong> ${skill.items.join(", ")}<br/>`;
+          } else if (typeof skill === "string") {
+            skillsEl.innerHTML += `${skill}, `;
+          }
+        });
+      } else if (typeof resumeData.skills === "string") {
+        skillsEl.textContent = resumeData.skills;
+      }
+      
+      preview.appendChild(skillsEl);
+      preview.appendChild(document.createElement("br"));
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      const projectsHeading = document.createElement("h3");
+      projectsHeading.textContent = "PROJECTS";
+      projectsHeading.style.fontSize = "12pt";
+      projectsHeading.style.fontWeight = "bold";
+      projectsHeading.style.marginBottom = "6pt";
+      preview.appendChild(projectsHeading);
+      
+      resumeData.projects.forEach(project => {
+        const projectItem = document.createElement("div");
+        projectItem.style.marginBottom = "8pt";
+        
+        let projectText = "";
+        if (project.name) projectText += `<strong>${project.name}</strong>`;
+        
+        if (project.technologies) {
+          const techText = Array.isArray(project.technologies) ? 
+            project.technologies.join(", ") : project.technologies;
+          projectText += ` | Technologies: ${techText}`;
+        }
+        
+        projectItem.innerHTML = projectText;
+        
+        if (project.description) {
+          const descEl = document.createElement("div");
+          descEl.textContent = `• ${project.description}`;
+          descEl.style.marginLeft = "12pt";
+          projectItem.appendChild(descEl);
+        }
+        
+        if (project.outcomes) {
+          const outcomesEl = document.createElement("div");
+          outcomesEl.innerHTML = `<em>Outcomes: ${project.outcomes}</em>`;
+          outcomesEl.style.marginLeft = "12pt";
+          projectItem.appendChild(outcomesEl);
+        }
+        
+        preview.appendChild(projectItem);
+      });
+      
+      preview.appendChild(document.createElement("br"));
+    }
+  }
+
+  function showResults(analysis, id) {
+    document.getElementById("resultsPanel").classList.remove("hidden");
+    setTimeout(() => {
+      document.getElementById("resultsPanel").classList.add("visible");
+    }, 100);
+
+    // ATS donut
+    const ats = analysis.ats_score ?? 0;
+    document.getElementById("atsText").textContent = ats ? `ATS Score: ${ats}%` : "No target skills provided";
+    const atsCtx = document.getElementById("atsChart").getContext("2d");
+    if (atsChart) atsChart.destroy();
+    atsChart = new Chart(atsCtx, {
+      type: "doughnut",
+      data: {
+        labels: ["Matched", "Missing"],
+        datasets: [{ 
+          data: [ats || 0, 100 - (ats || 0)], 
+          backgroundColor: ["#10B981","#EF4444"],
+          borderWidth: 0,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: typeof Chart !== 'undefined' ? Chart.helpers.color('#94a3b8').alpha(0.8).rgbString() : '#94a3b8',
+              font: {
+                family: "'Poppins', sans-serif"
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Animate progress bar
+    const progressBar = document.getElementById('matchProgress');
+    progressBar.style.width = '0%';
+    setTimeout(() => {
+      progressBar.style.width = `${ats}%`;
+    }, 100);
+    
+    document.getElementById('matchPercent').textContent = ats;
+
+    // timeline chart (years)
+    const timelineData = analysis.timeline || [];
+    const tLabels = timelineData.map(x => (x.role || "role").substring(0,12));
+    const tValues = timelineData.map(x => x.years || 0);
+    const timelineCtx = document.getElementById("timelineChart").getContext("2d");
+    if (timelineChart) timelineChart.destroy();
+    timelineChart = new Chart(timelineCtx, {
+      type: "bar",
+      data: { 
+        labels: tLabels, 
+        datasets: [{ 
+          label: "Years", 
+          data: tValues, 
+          backgroundColor: "#3B82F6" 
+        }] 
+      },
+      options: { 
+        scales: { y: { beginAtZero: true } },
+        plugins: {
+          legend: {
+            labels: {
+              color: typeof Chart !== 'undefined' ? Chart.helpers.color('#94a3b8').alpha(0.8).rgbString() : '#94a3b8',
+              font: {
+                family: "'Poppins', sans-serif"
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // keywords chart
+    const kw = analysis.keyword_freq || [];
+    const kwLabels = kw.map(x => x.word);
+    const kwValues = kw.map(x => x.count);
+    const keywordsCtx = document.getElementById("keywordsChart").getContext("2d");
+    if (keywordsChart) keywordsChart.destroy();
+    keywordsChart = new Chart(keywordsCtx, {
+      type: "bar",
+      data: { 
+        labels: kwLabels, 
+        datasets: [{ 
+          label: "Frequency", 
+          data: kwValues, 
+          backgroundColor: "#F59E0B" 
+        }] 
+      },
+      options: { 
+        indexAxis: 'y',
+        plugins: {
+          legend: {
+            labels: {
+              color: typeof Chart !== 'undefined' ? Chart.helpers.color('#94a3b8').alpha(0.8).rgbString() : '#94a3b8',
+              font: {
+                family: "'Poppins', sans-serif"
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // skill chips
+    const chips = document.getElementById("skillChips");
+    chips.innerHTML = "";
+    (analysis.matched_skills || []).forEach(s => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = s;
+      chips.appendChild(chip);
+    });
+
+    // gap list
+    const gapList = document.getElementById("gapList");
+    gapList.innerHTML = "";
+    (analysis.missing_skills || []).forEach(s => {
+      const chip = document.createElement("span");
+      chip.className = "chip missing";
+      chip.textContent = s;
+      gapList.appendChild(chip);
+    });
+
+    // resume text
+    document.getElementById("resumeText").textContent = analysis.resume_text || JSON.stringify(analysis.resume_json, null, 2);
+
+    // status clear
+    document.getElementById("status").textContent = "Done.";
+  }
+</script>
+</body>
+</html>

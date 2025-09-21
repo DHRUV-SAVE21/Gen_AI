@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Assistant Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      /* Light theme colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      
+      /* Brand colors */
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-light: #dbeafe;
+      --secondary: #10b981;
+      --secondary-hover: #059669;
+      --accent: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --warning: #f59e0b;
+      --warning-hover: #d97706;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      
+      /* Gradients */
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      --gradient-cool: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      --gradient-purple: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+      
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    /* Custom cursor styles */
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      mix-blend-mode: difference;
+      z-index: 9999;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+
+    .cursor-follower {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--primary);
+      border-radius: 50%;
+      z-index: 9998;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0.5;
+    }
+
+    .cursor.hover, .cursor-follower.hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      background: var(--accent);
+    }
+
+    /* Hide default cursor */
+    body {
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    body:hover .cursor,
+    body:hover .cursor-follower {
+      opacity: 1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+
+    /* Floating shapes */
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.5;
+      filter: blur(40px);
+      animation: float 15s infinite ease-in-out;
+    }
+
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--accent);
+      top: 70%;
+      left: 80%;
+      animation-delay: -5s;
+    }
+
+    .shape-3 {
+      width: 250px;
+      height: 250px;
+      background: var(--secondary);
+      top: 30%;
+      left: 70%;
+      animation-delay: -10s;
+    }
+
+    .shape-4 {
+      width: 180px;
+      height: 180px;
+      background: var(--warning);
+      top: 60%;
+      left: 10%;
+      animation-delay: -7s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, 40px) rotate(5deg);
+      }
+      50% {
+        transform: translate(0, 80px) rotate(0deg);
+      }
+      75% {
+        transform: translate(-20px, 40px) rotate(-5deg);
+      }
+    }
+
+    /* Navigation */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    [data-theme="dark"] .navbar {
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .navbar.scrolled {
+      padding: 1rem 2rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      cursor: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      padding-top: 6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 5rem 0;
+      border-radius: var(--radius);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      background: var(--gradient-primary);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,20 50,0 100,20 150,0 200,20 250,0 300,20 350,0 400,20 450,0 500,20 550,0 600,20 650,0 700,20 750,0 800,20 850,0 900,20 950,0 1000,20 1000,100 0,100"/></svg>') repeat-x;
+      animation: wave 20s linear infinite;
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100px); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: none;
+      transition: var(--transition);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: var(--transition);
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .feature-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transform: translateY(20px);
+      cursor: none;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: var(--transition);
+      transform-origin: left;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .feature-card:nth-child(1)::before { background: var(--gradient-primary); }
+    .feature-card:nth-child(2)::before { background: var(--gradient-secondary); }
+    .feature-card:nth-child(3)::before { background: var(--gradient-accent); }
+    .feature-card:nth-child(4)::before { background: var(--gradient-warm); }
+    .feature-card:nth-child(5)::before { background: var(--gradient-cool); }
+    .feature-card:nth-child(6)::before { background: var(--gradient-purple); }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      color: white;
+    }
+
+    .feature-card:nth-child(1) .feature-icon { background: var(--gradient-primary); }
+    .feature-card:nth-child(2) .feature-icon { background: var(--gradient-secondary); }
+    .feature-card:nth-child(3) .feature-icon { background: var(--gradient-accent); }
+    .feature-card:nth-child(4) .feature-icon { background: var(--gradient-warm); }
+    .feature-card:nth-child(5) .feature-icon { background: var(--gradient-cool); }
+    .feature-card:nth-child(6) .feature-icon { background: var(--gradient-purple); }
+
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .feature-button {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: none;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition);
+    }
+
+    .feature-button:hover::before {
+      left: 100%;
+    }
+
+    .feature-button:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-card:nth-child(1) .feature-button { background: var(--gradient-primary); }
+    .feature-card:nth-child(2) .feature-button { background: var(--gradient-secondary); }
+    .feature-card:nth-child(3) .feature-button { background: var(--gradient-accent); }
+    .feature-card:nth-child(4) .feature-button { background: var(--gradient-warm); }
+    .feature-card:nth-child(5) .feature-button { background: var(--gradient-cool); }
+    .feature-card:nth-child(6) .feature-button { background: var(--gradient-purple); }
+
+    /* Footer */
+    footer {
+      background: var(--bg-primary);
+      padding: 4rem 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .footer-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      transition: var(--transition);
+      cursor: none;
+    }
+
+    .social-link:hover {
+      background: var(--gradient-primary);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .footer-heading {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 3rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+        padding-top: 5rem;
+      }
+      
+      .navbar {
+        padding: 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .feature-card {
+        padding: 1.8rem;
+      }
+      
+      .theme-toggle {
+        bottom: 1rem;
+        right: 1rem;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .floating-shapes {
+        display: none;
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Floating background shapes -->
+  <div class="floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">CareerHub</div>
+    <div class="nav-links">
+      <a href="#" class="nav-link">Home</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#" class="nav-link">About</a>
+      <a href="#" class="nav-link">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Your AI-Powered Career Assistant</h1>
+        <p>Discover, plan, and advance your career with our intelligent tools and personalized guidance</p>
+        <button class="cta-button" onclick="scrollToFeatures()">Explore Features</button>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+      <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--text-primary);">Our Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3 class="feature-title">Career Explorer</h3>
+          <p class="feature-description">
+            Discover personalized career paths based on your skills and interests. Get AI-powered recommendations tailored to your profile.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('career_bp1.index') }}`">
+            Explore Careers <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <h3 class="feature-title">Smart Scheduler</h3>
+          <p class="feature-description">
+            Plan your career development with AI-generated schedules. Integrate with Google Calendar for seamless time management.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('scheduler_bp.index')}}`">
+            Create Schedule <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="feature-title">AI Career Coach</h3>
+          <p class="feature-description">
+            Chat with our intelligent career assistant. Get instant answers to your career questions and personalized advice.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('aibot_bp.bot')}}`">
+            Start Chatting <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-chart-gap"></i>
+          </div>
+          <h3 class="feature-title">Skill Gap Analysis</h3>
+          <p class="feature-description">
+            Analyze your resume against target companies. Identify skill gaps and get personalized learning recommendations.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('resume_bp.index')}}`">
+            Analyze Skills <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3 class="feature-title">Job Application Hub</h3>
+          <p class="feature-description">
+            Streamline your job search with automated applications, cover letter generation, and application tracking.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('job_bp.jobs_index')}}`">
+            Find Jobs <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h3 class="feature-title">Resume Builder</h3>
+          <p class="feature-description">
+            Create professional resumes with AI assistance. Generate tailored resumes for specific job applications.
+          </p>
+          <button class="feature-button" onclick="window.location.href=`{{ url_for('resume_generator_bp.index')}}`">
+            Build Resume <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div>
+        <div class="footer-logo">CareerHub</div>
+        <p class="footer-description">
+          Your AI-powered career development platform designed to help you achieve your professional goals.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      
+      <div>
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="footer-heading">Features</h4>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('career_bp1.index') }}">Career Explorer</a></li>
+          <li><a href="{{ url_for('scheduler_bp.index')}}">Smart Scheduler</a></li>
+          <li><a href="{{ url_for('aibot_bp.bot')}}">AI Career Coach</a></li>
+          <li><a href="{{ url_for('resume_bp.index')}}">Skill Gap Analysis</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="footer-heading">Support</h4>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      © 2025 CareerHub. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+
+  <script>
+    // Theme management
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // Custom cursor
+    document.addEventListener('DOMContentLoaded', function() {
+      const cursor = document.querySelector('.cursor');
+      const cursorFollower = document.querySelector('.cursor-follower');
+      
+      document.addEventListener('mousemove', function(e) {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        setTimeout(function() {
+          cursorFollower.style.left = e.clientX + 'px';
+          cursorFollower.style.top = e.clientY + 'px';
+        }, 100);
+      });
+      
+      // Add hover effects to interactive elements
+      const hoverElements = document.querySelectorAll('button, a, .feature-card, .theme-toggle, .social-link');
+      
+      hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.classList.add('hover');
+          cursorFollower.classList.add('hover');
+        });
+        
+        el.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hover');
+          cursorFollower.classList.remove('hover');
+        });
+      });
+    });
+
+    // Smooth scrolling
+    function scrollToFeatures() {
+      document.getElementById('features').scrollIntoView({ 
+        behavior: 'smooth' 
+      });
+    }
+
+    // Sticky navbar
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Initialize animations with GSAP
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate hero content
+      gsap.from('.hero-content', {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: 'power2.out'
+      });
+      
+      // Animate feature cards on scroll
+      gsap.registerPlugin(ScrollTrigger);
+      
+      gsap.to('.feature-card', {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#features',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        }
+      });
+      
+      // Parallax effect for floating shapes
+      const shapes = document.querySelectorAll('.shape');
+      shapes.forEach(shape => {
+        gsap.to(shape, {
+          y: 30,
+          duration: 2 + Math.random() * 3,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      });
+    });
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', initTheme);
+  </script>
+</body>
+</html>

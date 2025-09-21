@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Career Suggestions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      /* Light theme */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-light: #dbeafe;
+      --secondary: #10b981;
+      --secondary-hover: #059669;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      transition: var(--transition);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: var(--gradient-primary);
+      border-radius: var(--radius);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,20 50,0 100,20 150,0 200,20 250,0 300,20 350,0 400,20 450,0 500,20 550,0 600,20 650,0 700,20 750,0 800,20 850,0 900,20 950,0 1000,20 1000,100 0,100"/></svg>') repeat-x;
+      animation: wave 20s linear infinite;
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100px); }
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-section {
+      background: var(--bg-primary);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .search-form {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-btn {
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      min-width: 150px;
+      justify-content: center;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .search-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .search-btn .loading {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .career-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .career-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .career-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: var(--transition);
+      transform-origin: left;
+    }
+
+    .career-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .career-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .career-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .job-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .match-badge {
+      background: var(--gradient-secondary);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .job-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .job-details {
+      display: grid;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .detail-icon {
+      color: var(--primary);
+      width: 16px;
+    }
+
+    .missing-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .skill-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .missing-skills .skill-tag {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .expand-indicator {
+      text-align: center;
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .career-details {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: none;
+    }
+
+    .career-details.visible {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .details-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .details-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resource-item {
+      margin-bottom: 1rem;
+    }
+
+    .resource-skill {
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .resource-list {
+      margin-left: 1rem;
+    }
+
+    .resource-link {
+      display: block;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 0.25rem;
+      transition: var(--transition);
+    }
+
+    .resource-link:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    .roadmap-item {
+      padding: 0.75rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      margin-bottom: 0.5rem;
+      border-left: 3px solid var(--primary);
+    }
+
+    .roadmap-period {
+      font-weight: 500;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .roadmap-focus {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .search-form {
+        flex-direction: column;
+      }
+      
+      .form-group {
+        min-width: auto;
+      }
+      
+      .career-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-compass"></i> AI Career Advisor</h1>
+      <p>Discover personalized career paths based on your unique skills and interests</p>
+    </div>
+
+    <div class="search-section">
+      <div class="search-form">
+        <div class="form-group">
+          <label for="skillsInput">Your Skills</label>
+          <input 
+            id="skillsInput" 
+            type="text" 
+            placeholder="e.g. Python, JavaScript, Machine Learning, Communication..."
+          >
+        </div>
+        <button onclick="fetchCareers()" class="search-btn" id="searchBtn">
+          <i class="fas fa-search"></i>
+          Find Careers
+        </button>
+      </div>
+    </div>
+
+    <div id="careerContainer" class="career-grid"></div>
+    
+    <div id="emptyState" class="empty-state">
+      <i class="fas fa-briefcase"></i>
+      <h3>Ready to explore your career options?</h3>
+      <p>Enter your skills above to get personalized career recommendations powered by AI</p>
+    </div>
+  </div>
+
+  <script>
+    let isLoading = false;
+
+    // Theme management
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('theme-icon');
+      icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    async function fetchCareers() {
+      if (isLoading) return;
+      
+      const skills = document.getElementById("skillsInput").value.trim();
+      if (!skills) {
+        alert("Please enter your skills to get career recommendations.");
+        return;
+      }
+
+      setLoading(true);
+      hideEmptyState();
+
+      try {
+        const res = await fetch("feat1/get_careers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ skills })
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch career suggestions');
+        }
+
+        const data = await res.json();
+        renderCareers(data.jobs);
+      } catch (error) {
+        console.error('Error fetching careers:', error);
+        showError("Sorry, we couldn't fetch career suggestions right now. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function renderCareers(jobs) {
+      const container = document.getElementById("careerContainer");
+      container.innerHTML = "";
+
+      if (!jobs || jobs.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      jobs.forEach((job, idx) => {
+        const card = document.createElement("div");
+        card.className = "career-card";
+
+        const matchPercentage = Math.round(job.match_percent || 0);
+        const missingSkills = job.missing_skills || [];
+
+        card.innerHTML = `
+          <div class="career-header">
+            <div>
+              <h2 class="job-title">${escapeHtml(job.job_title)}</h2>
+            </div>
+            <div class="match-badge">${matchPercentage}% Match</div>
+          </div>
+          
+          <p class="job-description">${escapeHtml(job.description)}</p>
+          
+          <div class="job-details">
+            <div class="detail-row">
+              <i class="fas fa-percentage detail-icon"></i>
+              <span><strong>Skill Match:</strong> ${matchPercentage}%</span>
+            </div>
+            ${missingSkills.length > 0 ? `
+              <div class="detail-row">
+                <i class="fas fa-exclamation-triangle detail-icon"></i>
+                <span><strong>Skills to Learn:</strong></span>
+              </div>
+              <div class="missing-skills">
+                ${missingSkills.map(skill => `<span class="skill-tag">${escapeHtml(skill)}</span>`).join('')}
+              </div>
+            ` : `
+              <div class="detail-row">
+                <i class="fas fa-check-circle detail-icon" style="color: var(--success);"></i>
+                <span style="color: var(--success);"><strong>Perfect Match!</strong> You have all required skills</span>
+              </div>
+            `}
+          </div>
+
+          <div class="expand-indicator">
+            <i class="fas fa-chevron-down"></i>
+            Click to view resources and roadmap
+          </div>
+
+          <div class="career-details" id="details-${idx}">
+            <div class="details-section">
+              <h3 class="details-title">
+                <i class="fas fa-book"></i>
+                Learning Resources
+              </h3>
+              <div id="resources-${idx}"></div>
+            </div>
+
+            <div class="details-section">
+              <h3 class="details-title">
+                <i class="fas fa-route"></i>
+                Learning Roadmap
+              </h3>
+              <div id="roadmap-${idx}"></div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => toggleDetails(idx, job));
+        container.appendChild(card);
+      });
+    }
+
+    function toggleDetails(idx, job) {
+      const details = document.getElementById(`details-${idx}`);
+      const isVisible = details.classList.contains('visible');
+
+      if (!isVisible) {
+        details.classList.add('visible');
+        details.style.display = 'block';
+        
+        // Populate resources
+        const resourcesContainer = document.getElementById(`resources-${idx}`);
+        if (job.resources && Object.keys(job.resources).length > 0) {
+          resourcesContainer.innerHTML = Object.entries(job.resources).map(([skill, resources]) => `
+            <div class="resource-item">
+              <div class="resource-skill">${escapeHtml(skill)}</div>
+              <div class="resource-list">
+                ${resources.map(r => `
+                  <a href="${escapeHtml(r.url)}" class="resource-link" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-external-link-alt"></i> ${escapeHtml(r.title)}
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+          `).join('');
+        } else {
+          resourcesContainer.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">No specific resources available</p>';
+        }
+
+        // Populate roadmap
+        const roadmapContainer = document.getElementById(`roadmap-${idx}`);
+        if (job.roadmap && job.roadmap.length > 0) {
+          roadmapContainer.innerHTML = job.roadmap.map(r => `
+            <div class="roadmap-item">
+              <div class="roadmap-period">${escapeHtml(r.day_range)}</div>
+              <div class="roadmap-focus">Focus on ${escapeHtml(r.focus)}</div>
+            </div>
+          `).join('');
+        } else {
+          roadmapContainer.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">No roadmap available</p>';
+        }
+      } else {
+        details.classList.remove('visible');
+        setTimeout(() => {
+          details.style.display = 'none';
+        }, 300);
+      }
+    }
+
+    function setLoading(loading) {
+      isLoading = loading;
+      const searchBtn = document.getElementById("searchBtn");
+      const input = document.getElementById("skillsInput");
+      
+      if (loading) {
+        searchBtn.innerHTML = '<div class="loading"></div> Analyzing...';
+        searchBtn.disabled = true;
+        input.disabled = true;
+      } else {
+        searchBtn.innerHTML = '<i class="fas fa-search"></i> Find Careers';
+        searchBtn.disabled = false;
+        input.disabled = false;
+      }
+    }
+
+    function showEmptyState() {
+      document.getElementById("emptyState").style.display = 'block';
+    }
+
+    function hideEmptyState() {
+      document.getElementById("emptyState").style.display = 'none';
+    }
+
+    function showError(message) {
+      const container = document.getElementById("careerContainer");
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: var(--danger);">
+          <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <p>${escapeHtml(message)}</p>
+        </div>
+      `;
+    }
+
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      
+      // Allow Enter key to trigger search
+      document.getElementById("skillsInput").addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !isLoading) {
+          fetchCareers();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
